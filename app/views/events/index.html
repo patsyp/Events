@@ -1,0 +1,106 @@
+<a href="/users/<%=session[:user_id]%>/edit">Edit My Profile</a>
+<h2>Welcome <%=@current_user.first_name%>!</h2>
+
+<h3>Here are some of the events in your state:</h3>
+<table border='1'>
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Date</th>
+			<th>Location</th>
+			<th>Host</th>
+			<th>Action/Status</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% @local_events.each do |event| %>
+		<tr>
+			<td><a href="events/<%=event.id%>"><%=event.name%></a></td>
+			<td><%=event.date%></td>
+			<td><%=event.location%></td>
+			<td><%=event.user.first_name%></td>
+			<td>
+			<%if event.user.id == session[:user_id]%>
+				<a href="/events/<%=event.id%>" data-method="delete">Delete</a>
+				<a href="/events/<%=event.id%>/edit">Edit</a>
+			<%else%>
+				<% if @joins.include? event.id%>
+					<a href="/attendees/<%=event.id%>" data-method="delete">Cancel</a>
+				<%else%>
+					<a href="/attendees/<%=event.id%>" data-method="post">Join</a>
+				<%end%>
+			<%end%>
+			</td>
+		</tr>
+		<%end%>
+	</tbody>
+</table>
+<%if @local_events.length == 0 %>
+	<p>Sorry there are no events in your state yet.</p>
+<%end%>
+<!-- TABLE FOR EVENTS IN OTHER STATES -->
+<h3>Here are some of the events in other states.</h3>
+<table border="1">
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Date</th>
+			<th>Location</th>
+			<th>Host</th>
+			<th>Action/Status</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% @other_events.each do |event| %>
+		<tr>
+			<td><a href="/events/<%=event.id%>"><%=event.name%></a></td>
+			<td><%=event.date%></td>
+			<td><%=event.location%></td>
+			<td><%=event.user.first_name%></td>
+			<td>
+			<%if event.user.id == session[:user_id]%>
+				<a href="/events/<%=event.id%>" data-method="delete">Delete</a>
+				<a href="/events/<%=event.id%>/edit">Edit</a>
+			<%else%>
+				<% if @joins.include? event.id%>
+					<a href="/attendees/<%=event.id%>" data-method="delete">Cancel</a>
+				<%else%>
+					<a href="/attendees/<%=event.id%>" data-method="post">Join</a>
+				<%end%>
+			<%end%>	
+			</td>
+		</tr>
+		<%end%>
+	</tbody>
+</table>
+<%if @other_events.length == 0 %>
+	<p>Sorry there are no events outside your state yet.</p>
+<%end%>
+<hr>
+<h3>Add Event</h3>
+<form action='/events' method="post">
+	<input type="hidden" name="authenticity_token" value="<%=form_authenticity_token%>">
+	<div>
+		<label>Name: <input type="text" name="event[name]"></label>
+	</div>
+	<div>
+		<label>Date: <input type="date" name="event[date]"></label>
+	</div>
+	<div>
+		<label>Location: <input type="text" name="event[location]"></label>
+		<label>State: </label>
+		<select type="text" name="event[state]">
+		<% @states.each do |state| %>
+			<option><%=state%></option>
+		<%end%>
+		</select>
+	</div>
+	<input type="submit" name="Add Event">
+	<div class='errors'>
+		<%if flash[:event_errors] %>
+			<% flash[:event_errors].each do |error| %>
+				<p><%=error%></p>
+			<% end %>
+		<% end %>
+	</div>
+</form>

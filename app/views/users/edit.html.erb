@@ -1,0 +1,32 @@
+<a href="/events">Home</a>
+<h3>Edit Your Profile</h3>
+<form action="/users/<%=@user.id%>" method="post">
+	<input type="hidden" name="authenticity_token" value="<%=form_authenticity_token%>">
+	<input type="hidden" name="_method" value="put">
+	<div>
+		<label>First Name: <input type="text" name="user[first_name]" value="<%=@user.first_name%>"></label>
+	</div>
+	<div>
+		<label>Last Name: <input type="text" name="user[last_name]" value="<%=@user.last_name%>"></label>
+	</div>
+	<div>
+		<label>Email: <input type="email" name="user[email]" value="<%=@user.email%>"></label>
+	</div>
+	<div>
+		<label>Location: <input type="text" name="user[location]" value="<%=@user.location%>"></label>
+		<label>State:</label>
+		<select type="text" name="user[state]">
+		<% @states.each do |state| %>
+			<option><%=state%></option>
+		<%end%>
+	</select>
+	</div>
+	<input type="submit" value="Update Records">
+	<div class="errors">
+	<% if flash[:user_errors] %>
+	<% flash[:user_errors].each do |error| %>
+		<p><%=error%></p>
+		<%end%>
+	<%end%>
+	</div>
+</form>

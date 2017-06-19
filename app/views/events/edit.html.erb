@@ -1,0 +1,29 @@
+<h3>Edit your event</h3>
+<form action="/events/<%=@event.id%>" method="post">
+<input type="hidden" name="authenticity_token" value="<%=form_authenticity_token%>">
+<input type="hidden" name="_method" value="put">
+	<div>
+		<label>Name: <input type="text" name="event[name]" value="<%=@event.name%>"></label>
+	</div>
+	<div>
+		<label>Date: <input type="date" name="event[date]" value="<%=@event.date%>"></label>
+	</div>
+	<div>
+		<label>Location: <input type="text" name="event[location]" value="<%=@event.location%>"></label>
+		<label>State: </label>
+		<select type="text" name="event[state]">
+		<% @states.each do |state| %>
+			<option><%=state%></option>
+		<%end%>
+		</select>
+	</div>
+	<input type="submit" name="Add Event">
+	<div class='errors'>
+		<%if flash[:update_errors] %>
+			<% flash[:update_errors].each do |error| %>
+				<p><%=error%></p>
+			<% end %>
+		<% end %>
+	</div>
+	
+</form>
